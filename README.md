@@ -24,7 +24,7 @@ FashionKey es una propuesta de accesorio inteligente premium, inicialmente unos 
 - ✅ **Real (en el navegador):** detección de un único rostro, clasificación con lentes o sin lentes y detección de la mano junto a la oreja.
 - ⚠️ **Simulado:** la huella no se lee; el gesto representa apoyar el dedo en el sensor. Tampoco se verifica identidad, credencial NFC ni criptografía.
 - 🔒 **Privacidad:** la imagen se analiza localmente; no se graba, no se guarda ni se envía a ningún servidor.
-- Si no hay cámara o no se da el permiso, el sitio ofrece una simulación identificada como tal y un sensor de huella en pantalla.
+- Si no hay cámara o no se da el permiso, el sitio muestra el motivo y permite reintentar. Una vez detectados los lentes, la huella también puede confirmarse con un sensor en pantalla.
 
 **Limitaciones conocidas:** una foto de una persona con lentes mostrada a la cámara también se aprueba (no hay prueba de vida), y la cámara no puede saber de quién son los lentes. En celulares la cámara requiere **https**, como en el sitio publicado.
 

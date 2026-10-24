@@ -125,7 +125,7 @@ export function Checkout() {
           <h3>{r.title}</h3>
           <p>{r.reason}</p>
           <div className="factor-list">
-            <span className={`factor ${auth.device === 'registered' ? 'ok' : 'bad'}`}>Lentes · {auth.device === 'registered' ? 'detectados' : 'no detectados'}{auth.source === 'simulated' ? ' (simulado)' : ' (cámara)'}</span>
+            <span className={`factor ${auth.device === 'registered' ? 'ok' : 'bad'}`}>Lentes · {auth.device === 'registered' ? 'detectados' : 'no detectados'}{' (cámara)'}</span>
             <span className={`factor ${auth.biometric === 'confirmed' ? 'ok' : ''}`}>Huella · {auth.biometric !== 'confirmed' ? 'no solicitada' : auth.biometricSource === 'gesture' ? 'confirmada (gesto)' : 'confirmada (sensor)'}</span>
           </div>
           {r.approved && <div className="auto-progress" aria-hidden="true"><span style={{ animationDuration: `${AUTO.toConfirmation}ms` }} /></div>}

@@ -17,11 +17,11 @@ const mirror = (p: Point) => ({ left: `${(1 - p.x) * 100}%`, top: `${p.y * 100}%
 // Una sola sesión de cámara para los dos factores:
 //  1. busca un único rostro y decide si lleva lentes;
 //  2. si los lentes son válidos, sigue abierta y espera el gesto de llevar el dedo al sensor de la patilla, detrás de la oreja.
-// Si la cámara no está disponible, ofrece una simulación claramente identificada.
+// Si la cámara no está disponible, muestra el motivo y permite reintentar.
 export function GlassesCamera({ device, biometric, onResult, onTouch, onRetry }: {
   device: AuthState['device'];
   biometric: AuthState['biometric'];
-  onResult: (glasses: boolean, source: 'camera' | 'simulated') => void;
+  onResult: (glasses: boolean, source: 'camera') => void;
   onTouch: () => void;
   onRetry: () => void;
 }) {
@@ -164,11 +164,6 @@ export function GlassesCamera({ device, biometric, onResult, onTouch, onRetry }:
         {phase === 'error' && device === 'pending' && <button type="button" className="btn btn-ghost" onClick={retry}>Reintentar</button>}
       </div>
 
-      {device === 'pending' && <details className="camera-fallback" open={phase === 'error'}>
-        <summary>¿Sin cámara? Usar simulación</summary>
-        <p>Elegí el resultado de la comprobación. Queda registrado como simulado.</p>
-        <div><button type="button" className="btn btn-ghost" onClick={() => { stop(); onResult(true, 'simulated'); }}>Simular con lentes</button><button type="button" className="btn btn-ghost" onClick={() => { stop(); onResult(false, 'simulated'); }}>Simular sin lentes</button></div>
-      </details>}
       <p className="fine-print">{site.camera.privacy}</p>
     </div>
   </div>;

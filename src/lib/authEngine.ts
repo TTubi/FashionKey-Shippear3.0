@@ -4,7 +4,7 @@
 //      cuenta como apoyarlo. Alternativa: el sensor animado en pantalla. En ningún caso se captura una huella.
 // La detección de lentes es real pero solo visual: no identifica a la persona ni lee una credencial NFC.
 export type DeviceReading = 'registered' | 'none';
-export type DeviceSource = 'camera' | 'simulated';
+export type DeviceSource = 'camera';
 export type BiometricSource = 'gesture' | 'sensor';
 export type AuthResult = { approved: boolean; title: string; reason: string };
 export type AuthState = {
