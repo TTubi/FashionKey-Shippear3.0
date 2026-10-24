@@ -4,7 +4,8 @@ import { useRef } from 'react';
 import { Group, MathUtils } from 'three';
 import { products } from '@/config/products';
 import { SceneBoundary } from './SceneBoundary';
-import { Glasses, StudioEnvironment } from './Glasses';
+import { StudioEnvironment } from './Glasses';
+import { ProductModel, carouselScale } from './ProductModel';
 
 function CarouselItem({ index, selected, detail, onSelect, reduced }: { index: number; selected: number; detail: boolean; onSelect: (i: number) => void; reduced: boolean }) {
   const ref = useRef<Group>(null);
@@ -25,11 +26,12 @@ function CarouselItem({ index, selected, detail, onSelect, reduced }: { index: n
     g.rotation.y = MathUtils.lerp(g.rotation.y, active ? (detail ? (reduced ? -0.6 : -pointer.x * 1.5 - 0.3) : (reduced ? 0 : Math.sin(t * 0.4) * 0.25)) : -offset * 0.75, k);
     g.rotation.x = MathUtils.lerp(g.rotation.x, active ? (detail && !reduced ? -pointer.y * 0.35 : 0.08) : 0.14, k);
     g.rotation.z = MathUtils.lerp(g.rotation.z, active ? 0 : offset * 0.06, k);
-    g.scale.setScalar(MathUtils.lerp(g.scale.x, active ? (detail ? 1.15 : 1) : 0.5, k));
+    // Solo se muestran el modelo activo y sus dos vecinos; el resto se achica hasta desaparecer.
+    g.scale.setScalar(MathUtils.lerp(g.scale.x, active ? (detail ? 1.15 : 1) : Math.abs(offset) > 1 ? 0.001 : 0.5, k));
     g.visible = !detail || active;
   });
   return <group ref={ref} onClick={e => { e.stopPropagation(); onSelect(index); }}>
-    <Glasses frame={product.frame} frameColor={product.variants[0].color} accent={product.color} lensTint={product.light} reduced={reduced} />
+    <group scale={carouselScale[product.kind]}><ProductModel product={product} color={product.variants[0].color} reduced={reduced} /></group>
   </group>;
 }
 

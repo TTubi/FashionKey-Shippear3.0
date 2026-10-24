@@ -15,8 +15,8 @@ FashionKey es una propuesta de accesorio inteligente premium, inicialmente unos 
 | Sección | Qué hace |
 |---|---|
 | **Landing** | Hero con el prototipo 3D, problema, solución, cómo funciona, productos, diferenciales, casos de uso y cierre. |
-| **Prototipo 3D** | Anteojos modelados por código a partir de las fotos del prototipo: frente de acetato, incrustación dorada y sensor de huella en la punta de la patilla. Se gira, admite zoom y tiene encuadres predefinidos (frente, 3/4, lateral y chip de huella), plegado de patillas y fondo blanco u oscuro. |
-| **Tienda demo** | Tres modelos (One, Pro y Vision) con página de detalle, carrito persistente en el navegador y checkout. |
+| **Prototipos 3D** | Modelados por código a partir de las fotos de `Ejemplos/`: **anteojos** (sensor en la punta de la patilla, con plegado), **aros** (sensor en la traba, detrás del lóbulo, con la traba desmontable) y **colgante** (sensor bajo un cristal ahumado). Se giran, admiten zoom y tienen encuadres predefinidos, incluido el del sensor de huella, y fondo blanco u oscuro. |
+| **Tienda demo** | FashionKey One (anteojos), FashionKey Aros y FashionKey Colgante, con página de detalle, carrito persistente en el navegador y checkout. |
 | **Checkout con autenticación por cámara** | Resumen → Entrega y pago → Identidad → **Lentes y huella** → Autorización → Confirmación. La cámara comprueba que la persona lleva lentes y después detecta el gesto de llevar el dedo al sensor, detrás de la oreja. Al completarse, avanza solo hasta la confirmación. |
 
 ### Verificación por cámara: qué es real y qué es simulado

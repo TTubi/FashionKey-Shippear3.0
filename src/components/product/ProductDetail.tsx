@@ -10,18 +10,21 @@ import { formatPrice } from '@/lib/format';
 import { ProductArt, ProductMedia } from '@/components/ProductArt';
 import { QuantityStepper } from '@/components/shop/QuantityStepper';
 import { featureIcons } from '@/components/ui/Icons';
-import type { ViewerView } from '@/components/three/GlassesViewer';
+import type { ViewerView } from '@/components/three/ProductViewer';
 
-const GlassesViewer = dynamic(() => import('@/components/three/GlassesViewer').then(m => m.GlassesViewer), { ssr: false, loading: () => <div className="scene-loading">CARGANDO MODELO 3D</div> });
-const VIEWS: { label: string; name: ViewerView }[] = [{ label: 'Frente', name: 'front' }, { label: '3/4', name: 'threeQuarter' }, { label: 'Lateral', name: 'side' }, { label: 'Chip de huella', name: 'chip' }];
+const ProductViewer = dynamic(() => import('@/components/three/ProductViewer').then(m => m.ProductViewer), { ssr: false, loading: () => <div className="scene-loading">CARGANDO MODELO 3D</div> });
 
 export function ProductDetail({ product }: { product: Product }) {
   const [variantId, setVariantId] = useState(product.variants[0].id);
   const [qty, setQty] = useState(1);
   const [view, setView] = useState<{ name: ViewerView }>({ name: 'front' });
-  const [folded, setFolded] = useState(false);
+  const [alt, setAlt] = useState(false);
   const [light, setLight] = useState(false);
-  const showView = (name: ViewerView) => { setView({ name }); if (name === 'chip') setFolded(false); };
+  // Encuadres, acción propia (plegar / separar) y textos del visor según el tipo de producto (src/config/site.ts).
+  const viewer = site.viewer[product.kind];
+  const views: { label: string; name: ViewerView }[] = [{ label: 'Frente', name: 'front' }, { label: '3/4', name: 'threeQuarter' }, { label: 'Lateral', name: 'side' }, { label: viewer.chip, name: 'chip' }];
+  const showView = (name: ViewerView) => { setView({ name }); if (name === 'chip') setAlt(false); };
+  const peers = products.filter(p => p.kind === product.kind);
   const [shot, setShot] = useState(0);
   const reduced = !!useReducedMotion();
   const { add } = useCart();
@@ -37,14 +40,14 @@ export function ProductDetail({ product }: { product: Product }) {
       <div className={`viewer ${light ? 'is-light' : ''}`}>
         <span className="badge viewer-label">Prototipo 3D conceptual</span>
         <button type="button" className="viewer-bg" aria-pressed={light} onClick={() => setLight(l => !l)}>{light ? 'Fondo oscuro' : 'Fondo blanco'}</button>
-        <GlassesViewer product={product} frameColor={variant.color} view={view} folded={folded} reduced={reduced} />
-        {(view.name === 'chip' || folded) && <aside className="chip-note" aria-live="polite">
-          <strong>{site.chip.title}</strong>
-          <p>{folded ? site.chip.folded : site.chip.text}</p>
+        <ProductViewer product={product} color={variant.color} view={view} alt={alt} reduced={reduced} />
+        {(view.name === 'chip' || alt) && <aside className="chip-note" aria-live="polite">
+          <strong>{viewer.note.title}</strong>
+          <p>{alt && viewer.note.alt ? viewer.note.alt : viewer.note.text}</p>
         </aside>}
         <div className="viewer-angles" role="group" aria-label="Encuadre del modelo">
-          {VIEWS.map(v => <button type="button" key={v.name} aria-pressed={view.name === v.name} onClick={() => showView(v.name)}>{v.label}</button>)}
-          <button type="button" className="viewer-fold" aria-pressed={folded} onClick={() => { setFolded(f => !f); if (view.name === 'chip') setView({ name: 'threeQuarter' }); }}>{folded ? 'Desplegar' : 'Plegar lentes'}</button>
+          {views.map(v => <button type="button" key={v.name} aria-pressed={view.name === v.name} onClick={() => showView(v.name)}>{v.label}</button>)}
+          {viewer.alt && <button type="button" className="viewer-fold" aria-pressed={alt} onClick={() => { setAlt(a => !a); if (view.name === 'chip') setView({ name: 'threeQuarter' }); }}>{alt ? viewer.alt[1] : viewer.alt[0]}</button>}
         </div>
         <span className="viewer-hint">ARRASTRÁ PARA GIRAR · RUEDA O PELLIZCO PARA ZOOM</span>
       </div>
@@ -89,17 +92,17 @@ export function ProductDetail({ product }: { product: Product }) {
       <div className="info-grid">{site.technologyBrief.map(t => { const Icon = featureIcons[t.icon as keyof typeof featureIcons]; return <article key={t.title} className="info-card"><Icon size={26} /><h3>{t.title}</h3><p>{t.text}</p></article>; })}</div>
     </section>
 
-    <section className="product-section" aria-labelledby="compare-title">
+    {peers.length > 1 && <section className="product-section" aria-labelledby="compare-title">
       <span className="eyebrow">Comparación</span><h2 id="compare-title">Elegí tu modelo</h2>
       <div className="compare-wrap"><table className="compare">
-        <thead><tr><th scope="col"><span className="visually-hidden">Característica</span></th>{products.map(p => <th scope="col" key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}><Link href={`/productos/${p.slug}`}>{p.name}</Link></th>)}</tr></thead>
+        <thead><tr><th scope="col"><span className="visually-hidden">Característica</span></th>{peers.map(p => <th scope="col" key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}><Link href={`/productos/${p.slug}`}>{p.name}</Link></th>)}</tr></thead>
         <tbody>
-          {comparison.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{products.map(p => <td key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}>{row.values[p.slug] ?? '—'}</td>)}</tr>)}
-          <tr><th scope="row">Precio referencial</th>{products.map(p => <td key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}>{formatPrice(p.price, p.currency)}</td>)}</tr>
-          <tr><th scope="row">Estado</th>{products.map(p => <td key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}>{site.statusLabels[p.status]}</td>)}</tr>
+          {comparison.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{peers.map(p => <td key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}>{row.values[p.slug] ?? '—'}</td>)}</tr>)}
+          <tr><th scope="row">Precio referencial</th>{peers.map(p => <td key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}>{formatPrice(p.price, p.currency)}</td>)}</tr>
+          <tr><th scope="row">Estado</th>{peers.map(p => <td key={p.slug} className={p.slug === product.slug ? 'is-current' : ''}>{site.statusLabels[p.status]}</td>)}</tr>
         </tbody>
       </table></div>
-    </section>
+    </section>}
 
     <section className="product-section" aria-labelledby="faq-title">
       <span className="eyebrow">Preguntas frecuentes</span><h2 id="faq-title">Antes de seguir</h2>

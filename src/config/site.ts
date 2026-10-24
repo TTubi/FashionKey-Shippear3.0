@@ -25,7 +25,7 @@ export const site = {
     primaryCta: { label: 'Descubrí cómo funciona', href: '#como-funciona' },
     secondaryCta: { label: 'Explorá el concepto', href: '#solucion' },
     scrollTarget: '#problema',
-    hint: 'ARRASTRÁ · USÁ LAS FLECHAS · TOCÁ LOS LENTES'
+    hint: 'ARRASTRÁ · USÁ LAS FLECHAS · TOCÁ UN MODELO'
   },
   problem: {
     eyebrow: 'El desafío',
@@ -46,7 +46,7 @@ export const site = {
     pillars: [
       { icon: 'fingerprint', title: 'Identidad', text: 'Autenticación del usuario mediante un sensor de huella integrado en la patilla, detrás de la oreja.', status: 'demo', statusText: 'En la demo: la cámara detecta los lentes puestos y el gesto sobre el sensor. La lectura de huella es parte del concepto.' },
       { icon: 'nfc', title: 'Tecnología', text: 'Uso propuesto de NFC y credenciales criptográficas para validar cada autorización.', status: 'concept', statusText: 'Concepto en desarrollo: todavía no implementado en el prototipo.' },
-      { icon: 'gem', title: 'Diseño', text: 'Un accesorio premium de acetato con detalles dorados que integra la tecnología en la experiencia cotidiana.', status: 'demo', statusText: 'Explorá el prototipo en 3D en cada modelo.' }
+      { icon: 'gem', title: 'Diseño', text: 'Accesorios premium (anteojos de acetato, aros y colgante con detalles dorados) que integran la tecnología en la experiencia cotidiana.', status: 'demo', statusText: 'Explorá cada prototipo en 3D, con zoom sobre el sensor de huella.' }
     ]
   },
   how: {
@@ -63,8 +63,8 @@ export const site = {
   },
   catalog: {
     eyebrow: 'Productos',
-    title: 'Tres modelos. Un mismo concepto.',
-    text: 'Modelos conceptuales para explorar la propuesta. Nombres, precios e imágenes son temporales y referenciales, y la compra es una demostración.'
+    title: 'Anteojos y joyas. Un mismo concepto.',
+    text: 'Anteojos, aros y un colgante: prototipos conceptuales con el sensor de huella integrado. Nombres, precios e imágenes son referenciales y la compra es una demostración.'
   },
   differentials: {
     eyebrow: 'Diferenciales',
@@ -104,12 +104,36 @@ export const site = {
     simulation: 'Demostración — la cámara solo detecta si hay lentes puestos y el gesto de la mano; la huella no se lee. No es una verificación de identidad, biométrica ni criptográfica real.',
     order: 'Esta confirmación no constituye una compra comercial real. No se procesó ningún pago, no se envió información a terceros y no se generará ningún envío.'
   },
-  // Textos del encuadre "Chip de huella" en el visor 3D del producto.
-  chip: {
-    title: 'Sensor de huella integrado',
-    text: 'Está en la punta de la patilla, rodeado por un aro dorado. Al usar los lentes queda detrás de la oreja, así que no se ve. Probá "Plegar lentes" para ver cómo se guarda detrás del frente.',
-    folded: 'Al plegarlos, la punta de la patilla se guarda detrás del frente y el sensor queda mirando hacia adentro, protegido de golpes y rayones.'
-  },
+  // Visor 3D del detalle de producto, según el tipo: nombre del encuadre del sensor, acción propia [activar, desactivar] y nota.
+  viewer: {
+    glasses: {
+      chip: 'Chip de huella',
+      alt: ['Plegar lentes', 'Desplegar'],
+      note: {
+        title: 'Sensor de huella integrado',
+        text: 'Está en la punta de la patilla, rodeado por un aro dorado. Al usar los lentes queda detrás de la oreja, así que no se ve. Probá "Plegar lentes" para ver cómo se guarda detrás del frente.',
+        alt: 'Al plegarlos, la punta de la patilla se guarda detrás del frente y el sensor queda mirando hacia adentro, protegido de golpes y rayones.'
+      }
+    },
+    earring: {
+      chip: 'Sensor de huella',
+      alt: ['Separar la traba', 'Colocar la traba'],
+      note: {
+        title: 'Sensor oculto en la traba',
+        text: 'Está en la cara trasera de la traba, del lado de atrás del lóbulo: al usarlos no se ve. Se autentica llevando el dedo detrás de la oreja.',
+        alt: 'Separada del poste, la traba muestra su cara dorada con el orificio. El sensor queda del otro lado, el que toca el dedo.'
+      }
+    },
+    pendant: {
+      chip: 'Sensor de huella',
+      alt: null,
+      note: {
+        title: 'Sensor bajo el cristal',
+        text: 'La huella se lee a través del cristal ahumado del centro, rodeado por el halo de piedras. Basta un toque con el colgante puesto.',
+        alt: null
+      }
+    }
+  } as Record<'glasses' | 'earring' | 'pendant', { chip: string; alt: [string, string] | null; note: { title: string; text: string; alt: string | null } }>,
   camera: {
     intro: 'La cámara comprueba primero que llevás puestos tus lentes y después el gesto de apoyar el dedo en el sensor de huella de la patilla, detrás de la oreja. Mirá de frente, con buena luz.',
     privacy: 'La imagen se analiza en tu navegador: no se graba, no se guarda y no se envía a ningún servidor. La cámara se apaga al terminar la comprobación.'

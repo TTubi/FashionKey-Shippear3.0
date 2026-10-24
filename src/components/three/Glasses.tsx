@@ -3,7 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import { BufferGeometry, CanvasTexture, ExtrudeGeometry, Group, MathUtils, MeshPhysicalMaterial, MeshStandardMaterial, Path, PMREMGenerator, Shape, ShapeGeometry, SRGBColorSpace, Vector3 } from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
-import type { Product } from '@/config/products';
+import type { GlassesFrame } from '@/config/products';
 
 // Prototipo FashionKey (ver /Ejemplos): frente de acetato grueso, incrustación dorada junto a la bisagra,
 // patillas que bajan detrás de la oreja, sensor de huella con aro dorado en la punta derecha
@@ -44,7 +44,7 @@ function bend(g: BufferGeometry) {
 }
 
 // Medidas derivadas de la forma de cada modelo (frame = abertura de cada lente); también las usa la cámara para encuadrar el sensor.
-export function prototypeLayout(frame: Product['frame']) {
+export function prototypeLayout(frame: GlassesFrame) {
   const { width: w, height: h } = frame;
   const lensX = BRIDGE / 2 + w / 2;
   const X = lensX + w / 2 + RIM.side, Y = h / 2 + RIM.top, bottom = -(h / 2 + RIM.bottom);
@@ -54,7 +54,7 @@ export function prototypeLayout(frame: Product['frame']) {
   return { X, Y, bottom, lensX, hingeY, pivotX, pivotZ, sensor, sensorNormal: new Vector3(c, 0, s) };
 }
 
-function frontGeometry(frame: Product['frame']) {
+function frontGeometry(frame: GlassesFrame) {
   const { width: w, height: h, radius: r } = frame;
   const { X, Y, bottom: B, lensX } = prototypeLayout(frame);
   const xi = BRIDGE / 2 - RIM.nose; // borde interno de cada aro, junto a la nariz
@@ -97,14 +97,15 @@ function templeGeometry() {
   return g;
 }
 
-function fingerprintTexture() {
+// Textura de huella para los sensores de todos los modelos (anteojos, aros y colgante).
+export function fingerprintTexture({ light = '#6a6f77', dark = '#202227', line = 'rgba(225,230,236,.6)' } = {}) {
   const c = document.createElement('canvas');
   c.width = c.height = 256;
   const x = c.getContext('2d')!;
   const bg = x.createRadialGradient(118, 100, 10, 128, 128, 150);
-  bg.addColorStop(0, '#6a6f77'); bg.addColorStop(1, '#202227');
+  bg.addColorStop(0, light); bg.addColorStop(1, dark);
   x.fillStyle = bg; x.fillRect(0, 0, 256, 256);
-  x.strokeStyle = 'rgba(225,230,236,.6)'; x.lineWidth = 2.4; x.lineCap = 'round';
+  x.strokeStyle = line; x.lineWidth = 2.4; x.lineCap = 'round';
   for (let i = 0; i < 15; i++) {
     const start = 0.4 + ((i * 1.7) % 2.2);
     x.beginPath();
@@ -116,7 +117,7 @@ function fingerprintTexture() {
   return t;
 }
 
-export function Glasses({ frame, frameColor, accent, lensTint, reduced, folded = false }: { frame: Product['frame']; frameColor: string; accent: string; lensTint: string; reduced: boolean; folded?: boolean }) {
+export function Glasses({ frame, frameColor, accent, lensTint, reduced, folded = false }: { frame: GlassesFrame; frameColor: string; accent: string; lensTint: string; reduced: boolean; folded?: boolean }) {
   const layout = useMemo(() => prototypeLayout(frame), [frame]);
   const { front, lenses } = useMemo(() => frontGeometry(frame), [frame]);
   const temple = useMemo(() => templeGeometry(), []);

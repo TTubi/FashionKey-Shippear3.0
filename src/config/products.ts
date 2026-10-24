@@ -2,7 +2,9 @@
 // el resto de la aplicación (home, detalle, carrito y checkout) se actualiza sola.
 export type ProductStatus = 'concept' | 'preorder' | 'available';
 export type Variant = { id: string; name: string; color: string };
-export type Product = {
+// kind define qué modelo 3D y qué representación se muestran: anteojos, aros o colgante.
+export type ProductKind = 'glasses' | 'earring' | 'pendant';
+type ProductBase = {
   slug: string;
   name: string;
   tagline: string;
@@ -14,18 +16,20 @@ export type Product = {
   priceIsSimulated: boolean;
   color: string; // acento de iluminación del modelo
   light: string;
-  frame: { width: number; height: number; radius: number }; // abertura de cada lente en el modelo 3D (ancho, alto, radio de esquinas)
-  variants: Variant[]; // la primera es la predeterminada
+  variants: Variant[]; // la primera es la predeterminada; en joyas, color es el del metal
   features: string[];
   images: { src: string; alt: string }[]; // vacío = se muestran representaciones conceptuales
 };
+export type GlassesFrame = { width: number; height: number; radius: number }; // abertura de cada lente (ancho, alto, radio de esquinas)
+export type Product = ProductBase & ({ kind: 'glasses'; frame: GlassesFrame } | { kind: 'earring' } | { kind: 'pendant' });
 
 export const products: Product[] = [
   {
     slug: 'fashionkey-one',
     name: 'FashionKey One',
-    tagline: 'Autenticación digital para todos los días.',
-    description: 'Modelo de entrada orientado a autorizar compras y operaciones cotidianas con un segundo factor físico.',
+    tagline: 'Tu llave de seguridad, con estilo.',
+    description: 'Anteojos de acetato con el sensor de huella oculto en la punta de la patilla, para autorizar compras y operaciones sensibles con un segundo factor físico.',
+    kind: 'glasses',
     category: 'Lentes inteligentes',
     status: 'concept',
     price: 249,
@@ -33,68 +37,63 @@ export const products: Product[] = [
     priceIsSimulated: true,
     color: '#56E39F',
     light: '#C3F6DC',
-    frame: { width: 0.84, height: 0.67, radius: 0.14 },
+    frame: { width: 0.86, height: 0.69, radius: 0.1 }, // proporciones del prototipo (Ejemplos/Prototipo_Angulo_2.jpeg)
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
       { id: 'grafito', name: 'Grafito', color: '#3a3e46' },
       { id: 'humo', name: 'Cristal humo', color: '#8b9099' }
     ],
-    features: ['Sensor de huella oculto en la punta de la patilla', 'Credencial NFC conceptual en la patilla', 'Pensado para autorizar compras cotidianas', 'Vinculación con un dispositivo compatible'],
+    features: ['Sensor de huella oculto en la punta de la patilla', 'Credencial NFC conceptual en la patilla', 'Pensado para autorizar compras y operaciones sensibles', 'Vinculación con un dispositivo compatible'],
     images: []
   },
   {
-    slug: 'fashionkey-pro',
-    name: 'FashionKey Pro',
-    tagline: 'Más control para operaciones que lo exigen.',
-    description: 'Concepto de dispositivo avanzado para usuarios que requieren funcionalidades adicionales y autorizaciones reforzadas.',
-    category: 'Lentes inteligentes',
+    slug: 'fashionkey-aros',
+    name: 'FashionKey Aros',
+    kind: 'earring',
+    tagline: 'Brillo adelante, seguridad detrás.',
+    description: 'Concepto de aros de joyería con el sensor de huella oculto en la traba, del lado de atrás del lóbulo.',
+    category: 'Joyería inteligente',
     status: 'concept',
-    price: 399,
+    price: 349,
+    currency: 'USD',
+    priceIsSimulated: true,
+    color: '#56E39F',
+    light: '#C3F6DC',
+    variants: [
+      { id: 'oro-rosado', name: 'Oro rosado', color: '#E3B48E' },
+      { id: 'oro-amarillo', name: 'Oro amarillo', color: '#DDB45F' },
+      { id: 'platino', name: 'Platino', color: '#D7DADF' }
+    ],
+    features: ['Sensor de huella oculto en la traba, detrás del lóbulo', 'Diseño de joyería con halo de piedras (concepto)', 'Mismo concepto de autenticación que los anteojos'],
+    images: []
+  },
+  {
+    slug: 'fashionkey-colgante',
+    name: 'FashionKey Colgante',
+    kind: 'pendant',
+    tagline: 'La seguridad, cerca del corazón.',
+    description: 'Concepto de colgante con el sensor de huella bajo un cristal ahumado, rodeado por un halo de piedras.',
+    category: 'Joyería inteligente',
+    status: 'concept',
+    price: 449,
     currency: 'USD',
     priceIsSimulated: true,
     color: '#00CF9F',
     light: '#9BEBD6',
-    frame: { width: 0.86, height: 0.69, radius: 0.1 },
     variants: [
-      { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
-      { id: 'azul-noche', name: 'Azul noche', color: '#1d2a4d' },
-      { id: 'titanio', name: 'Titanio', color: '#9aa0a8' }
+      { id: 'oro-rosado', name: 'Oro rosado', color: '#E3B48E' },
+      { id: 'oro-amarillo', name: 'Oro amarillo', color: '#DDB45F' },
+      { id: 'platino', name: 'Platino', color: '#D7DADF' }
     ],
-    features: ['Concepto de gestión de varios dispositivos vinculados', 'Autorizaciones reforzadas para operaciones de mayor valor', 'Indicador luminoso de estado'],
-    images: []
-  },
-  {
-    slug: 'fashionkey-vision',
-    name: 'FashionKey Vision',
-    tagline: 'Una mirada hacia lo que viene.',
-    description: 'Concepto de producto futuro con posibilidades ampliadas de integración digital.',
-    category: 'Lentes inteligentes',
-    status: 'concept',
-    price: 649,
-    currency: 'USD',
-    priceIsSimulated: true,
-    color: '#8FA391',
-    light: '#D2DDD3',
-    frame: { width: 0.9, height: 0.66, radius: 0.2 },
-    variants: [
-      { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
-      { id: 'grafito', name: 'Grafito', color: '#3a3e46' },
-      { id: 'hielo', name: 'Hielo', color: '#d5dde8' }
-    ],
-    features: ['Exploración de integraciones digitales ampliadas', 'Diseño envolvente conceptual', 'Plataforma pensada para evolucionar'],
+    features: ['Sensor de huella bajo un cristal ahumado', 'Halo de piedras y cadena (concepto)', 'Se autentica con un toque, sin sacártelo'],
     images: []
   }
 ];
 
 export const getProduct = (slug: string) => products.find(p => p.slug === slug);
 
-// Comparación conceptual: describe el posicionamiento de cada modelo, no especificaciones técnicas.
-export const comparison: { label: string; values: Record<string, string> }[] = [
-  { label: 'Credencial NFC conceptual', values: { 'fashionkey-one': 'Prevista', 'fashionkey-pro': 'Prevista', 'fashionkey-vision': 'Prevista' } },
-  { label: 'Autorización de compras', values: { 'fashionkey-one': 'Cotidianas', 'fashionkey-pro': 'Reforzadas', 'fashionkey-vision': 'En exploración' } },
-  { label: 'Dispositivos vinculados', values: { 'fashionkey-one': 'Uno', 'fashionkey-pro': 'Varios (concepto)', 'fashionkey-vision': 'En exploración' } },
-  { label: 'Integraciones digitales', values: { 'fashionkey-one': '—', 'fashionkey-pro': 'Básicas (concepto)', 'fashionkey-vision': 'Ampliadas (concepto)' } }
-];
+// Comparación entre modelos del mismo tipo (se muestra en el detalle cuando hay más de uno). Claves: slug de cada producto.
+export const comparison: { label: string; values: Record<string, string> }[] = [];
 
 export const faq = [
   { q: '¿Puedo comprar los lentes hoy?', a: 'No. Todos los modelos son conceptos en desarrollo. El carrito y el checkout son una demostración: no se procesan pagos ni se generan pedidos reales.' },

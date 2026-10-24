@@ -4,6 +4,7 @@ import { useEffect, useReducer, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { site } from '@/config/site';
 import { useCart, type CartLine } from '@/lib/cart';
+import { products } from '@/config/products';
 import { authReducer, initialAuth } from '@/lib/authEngine';
 import { formatPrice } from '@/lib/format';
 import { ProductMedia } from '@/components/ProductArt';
@@ -66,7 +67,8 @@ export function Checkout() {
   const lines = order ? order.lines : cart.lines;
   const subtotal = order ? order.subtotal : cart.subtotal;
   const currency = order ? order.currency : cart.currency;
-  const device = lines[0].product;
+  // La autenticación de la demo usa los anteojos: se vincula el primer par del carrito (o el modelo de entrada si no hay).
+  const device = lines.find(l => l.product.kind === 'glasses')?.product ?? products.find(p => p.kind === 'glasses')!;
   const payment = site.demo.payment;
   const retry = () => { dispatch({ type: 'reset' }); setStep('camera'); };
   const confirm = () => {
