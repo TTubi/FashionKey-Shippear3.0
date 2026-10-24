@@ -5,6 +5,7 @@
 export const site = {
   brand: {
     name: 'FashionKey',
+    wordmark: 'Fashionkey', // así se escribe el logotipo en el manual de marca
     slogan: 'Seguridad que se luce, se usa',
     description: 'FashionKey propone una nueva forma de pensar la autenticación digital: un accesorio inteligente que combina diseño premium y tecnología para ayudarte a proteger las acciones que más importan.',
     event: 'Proyecto en desarrollo para la Hackatón Shippear'

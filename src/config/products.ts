@@ -31,8 +31,8 @@ export const products: Product[] = [
     price: 249,
     currency: 'USD',
     priceIsSimulated: true,
-    color: '#4fd8ff',
-    light: '#bdf1ff',
+    color: '#56E39F',
+    light: '#C3F6DC',
     frame: { width: 0.84, height: 0.67, radius: 0.14 },
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
@@ -52,8 +52,8 @@ export const products: Product[] = [
     price: 399,
     currency: 'USD',
     priceIsSimulated: true,
-    color: '#3d7bff',
-    light: '#b3c9ff',
+    color: '#00CF9F',
+    light: '#9BEBD6',
     frame: { width: 0.86, height: 0.69, radius: 0.1 },
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
@@ -73,8 +73,8 @@ export const products: Product[] = [
     price: 649,
     currency: 'USD',
     priceIsSimulated: true,
-    color: '#8f9dff',
-    light: '#d3d9ff',
+    color: '#8FA391',
+    light: '#D2DDD3',
     frame: { width: 0.9, height: 0.66, radius: 0.2 },
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
