@@ -20,6 +20,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const [view, setView] = useState<{ name: ViewerView }>({ name: 'front' });
   const [folded, setFolded] = useState(false);
+  const [light, setLight] = useState(false);
   const showView = (name: ViewerView) => { setView({ name }); if (name === 'chip') setFolded(false); };
   const [shot, setShot] = useState(0);
   const reduced = !!useReducedMotion();
@@ -33,8 +34,9 @@ export function ProductDetail({ product }: { product: Product }) {
     <nav className="breadcrumb" aria-label="Ruta"><Link href="/">Inicio</Link><span>/</span><Link href="/#productos">Productos</Link><span>/</span><span aria-current="page">{product.name}</span></nav>
 
     <div className="product-hero">
-      <div className="viewer">
+      <div className={`viewer ${light ? 'is-light' : ''}`}>
         <span className="badge viewer-label">Prototipo 3D conceptual</span>
+        <button type="button" className="viewer-bg" aria-pressed={light} onClick={() => setLight(l => !l)}>{light ? 'Fondo oscuro' : 'Fondo blanco'}</button>
         <GlassesViewer product={product} frameColor={variant.color} view={view} folded={folded} reduced={reduced} />
         {(view.name === 'chip' || folded) && <aside className="chip-note" aria-live="polite">
           <strong>{site.chip.title}</strong>

@@ -33,7 +33,7 @@ export const products: Product[] = [
     priceIsSimulated: true,
     color: '#4fd8ff',
     light: '#bdf1ff',
-    frame: { width: 0.8, height: 0.72, radius: 0.16 },
+    frame: { width: 0.84, height: 0.67, radius: 0.14 },
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
       { id: 'grafito', name: 'Grafito', color: '#3a3e46' },
@@ -54,7 +54,7 @@ export const products: Product[] = [
     priceIsSimulated: true,
     color: '#3d7bff',
     light: '#b3c9ff',
-    frame: { width: 0.82, height: 0.76, radius: 0.11 },
+    frame: { width: 0.86, height: 0.69, radius: 0.1 },
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
       { id: 'azul-noche', name: 'Azul noche', color: '#1d2a4d' },
@@ -75,7 +75,7 @@ export const products: Product[] = [
     priceIsSimulated: true,
     color: '#8f9dff',
     light: '#d3d9ff',
-    frame: { width: 0.86, height: 0.72, radius: 0.22 },
+    frame: { width: 0.9, height: 0.66, radius: 0.2 },
     variants: [
       { id: 'negro-mate', name: 'Negro mate', color: '#141416' },
       { id: 'grafito', name: 'Grafito', color: '#3a3e46' },

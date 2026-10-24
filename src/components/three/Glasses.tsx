@@ -10,9 +10,11 @@ import type { Product } from '@/config/products';
 // y placa dorada en la cara interna de la punta izquierda. Todo es geometría propia, sin archivos externos.
 const HARDWARE = '#c9a45c';
 // Frente: aro grueso por ojo (más ancho arriba), unidos solo por un puente alto, con hueco nasal abierto debajo.
-const RIM = { side: 0.13, top: 0.15, bottom: 0.14, nose: 0.09 };
-const BRIDGE = 0.42, BRIDGE_DROP = 0.3, DEPTH = 0.16, WRAP = 0.05, SPLAY = 0.06, CENTER_Z = 1.1;
-const CORNER = { top: 0.09, bottomOuter: 0.22, bottomInner: 0.3 };
+// Medido sobre Ejemplos/Prototipo_Angulo_2.jpeg corrigiendo la perspectiva: aros ≈ 0,10 del ancho de la lente
+// (incluido el borde redondeado de 0,022) y lentes más anchas que altas (alto ≈ 0,74 del ancho).
+const RIM = { side: 0.066, top: 0.072, bottom: 0.062, nose: 0.05 };
+const BRIDGE = 0.3, BRIDGE_DROP = 0.3, DEPTH = 0.11, WRAP = 0.05, SPLAY = 0.06, CENTER_Z = 1.1;
+const CORNER = { top: 0.06, bottomOuter: 0.19, bottomInner: 0.22 };
 const FOLD = { right: 1.5, left: 1.38 };
 const SENSOR = { u: 2.47, v: -0.47, radius: 0.058 };
 
@@ -46,7 +48,7 @@ export function prototypeLayout(frame: Product['frame']) {
   const { width: w, height: h } = frame;
   const lensX = BRIDGE / 2 + w / 2;
   const X = lensX + w / 2 + RIM.side, Y = h / 2 + RIM.top, bottom = -(h / 2 + RIM.bottom);
-  const hingeY = Y - 0.15, pivotX = X - 0.07, pivotZ = -DEPTH / 2 + wrapZ(X);
+  const hingeY = Y - 0.085, pivotX = X - 0.07, pivotZ = -DEPTH / 2 + wrapZ(X);
   const lx = 0.079, lz = -SENSOR.u, c = Math.cos(SPLAY), s = Math.sin(SPLAY);
   const sensor = new Vector3(pivotX + lx * c - lz * s, hingeY + SENSOR.v, pivotZ + lx * s + lz * c + CENTER_Z);
   return { X, Y, bottom, lensX, hingeY, pivotX, pivotZ, sensor, sensorNormal: new Vector3(c, 0, s) };
@@ -69,8 +71,8 @@ function frontGeometry(frame: Product['frame']) {
   s.lineTo(-X + ro, B); s.quadraticCurveTo(-X, B, -X, B + ro);
   s.lineTo(-X, Y - rt); s.quadraticCurveTo(-X, Y, -X + rt, Y);
   s.holes.push(lensOutline(new Path(), w, h, r, -lensX), lensOutline(new Path(), w, h, r, lensX));
-  const core = DEPTH - 0.09;
-  const g = new ExtrudeGeometry(s, { depth: core, bevelEnabled: true, bevelThickness: 0.045, bevelSize: 0.03, bevelSegments: 6, curveSegments: 36 });
+  const core = DEPTH - 0.06;
+  const g = new ExtrudeGeometry(s, { depth: core, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.022, bevelSegments: 6, curveSegments: 36 });
   g.translate(0, 0, -core / 2);
   const lenses = [-1, 1].map(side => bend(new ShapeGeometry(lensOutline(new Shape(), w + 0.02, h + 0.02, r, side * lensX), 36)));
   return { front: bend(g), lenses };
@@ -79,16 +81,16 @@ function frontGeometry(frame: Product['frame']) {
 // Perfil lateral de la patilla (u = hacia atrás, v = altura): alta junto a la bisagra, ondulada, y con la punta curvada hacia abajo.
 function templeGeometry() {
   const s = new Shape();
-  s.moveTo(0, 0.11);
-  s.lineTo(0.5, 0.105);
-  s.quadraticCurveTo(1.4, 0.09, 1.85, 0.065);
+  s.moveTo(0, 0.075);
+  s.lineTo(0.5, 0.072);
+  s.quadraticCurveTo(1.4, 0.065, 1.85, 0.055);
   s.quadraticCurveTo(2.3, 0.04, 2.56, -0.33);
   s.quadraticCurveTo(2.68, -0.56, 2.5, -0.63);
   s.quadraticCurveTo(2.36, -0.66, 2.31, -0.45);
   s.quadraticCurveTo(2.2, -0.08, 1.88, -0.045);
-  s.lineTo(1.25, -0.035);
-  s.quadraticCurveTo(0.8, -0.03, 0.62, -0.1);
-  s.quadraticCurveTo(0.45, -0.12, 0, -0.12);
+  s.lineTo(1.25, -0.03);
+  s.quadraticCurveTo(0.8, -0.028, 0.62, -0.07);
+  s.quadraticCurveTo(0.45, -0.08, 0, -0.08);
   s.closePath();
   const g = new ExtrudeGeometry(s, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3, curveSegments: 24 });
   g.rotateY(Math.PI / 2); // u → -z, profundidad → x (cara externa en x = 0.07)
@@ -141,11 +143,11 @@ export function Glasses({ frame, frameColor, accent, lensTint, reduced, folded =
   return <group position={[0, 0, CENTER_Z]}>
     <mesh geometry={front} material={acetate} />
     {lenses.map((l, i) => <mesh key={i} geometry={l} material={glass} />)}
-    {[-1, 1].map(side => <mesh key={side} position={[side * (layout.X - 0.13), layout.hingeY, -DEPTH / 2 - 0.02 + wrapZ(layout.X - 0.13)]} material={gold}><boxGeometry args={[0.12, 0.07, 0.04]} /></mesh>)}
+    {[-1, 1].map(side => <mesh key={side} position={[side * (layout.X - 0.13), layout.hingeY, -DEPTH / 2 - 0.02 + wrapZ(layout.X - 0.13)]} material={gold}><boxGeometry args={[0.1, 0.05, 0.035]} /></mesh>)}
     {[1, -1].map(side => <group key={side} position={[side * layout.pivotX, layout.hingeY, layout.pivotZ]} scale={[side, 1, 1]}>
       <group ref={side === 1 ? right : left} rotation={[0, -SPLAY, 0]}>
         <mesh geometry={temple} material={acetate} />
-        <mesh position={[0.072, -0.005, -0.34]} material={gold}><boxGeometry args={[0.008, 0.2, 0.03]} /></mesh>
+        <mesh position={[0.072, -0.003, -0.34]} material={gold}><boxGeometry args={[0.008, 0.14, 0.028]} /></mesh>
         {side === 1 ? <group position={[0.072, SENSOR.v, -SENSOR.u]}>
           <mesh rotation={[0, Math.PI / 2, 0]} material={gold}><torusGeometry args={[SENSOR.radius + 0.006, 0.009, 14, 48]} /></mesh>
           <mesh rotation={[0, 0, -Math.PI / 2]} position={[0.002, 0, 0]} material={sensorMat}><cylinderGeometry args={[SENSOR.radius, SENSOR.radius, 0.008, 48]} /></mesh>
