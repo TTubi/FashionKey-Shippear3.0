@@ -11,7 +11,7 @@ import './showcase.css';
 
 const GlassesScene = dynamic(() => import('@/components/three/GlassesScene').then(m => m.GlassesScene), { ssr: false, loading: () => <div className="scene-loading">CARGANDO EXPERIENCIA 3D</div> });
 
-// Hero con el carrusel 3D de modelos (heredado de la demo de latas): flechas, arrastre, teclado y clic para el modo detalle.
+// Hero de FashionKey: título, slogan y carrusel 3D de los modelos (flechas, arrastre, teclado y clic para el modo detalle).
 export function ProductShowcase() {
   const [selected, setSelected] = useState(0);
   const [detail, setDetail] = useState(false);
@@ -22,7 +22,7 @@ export function ProductShowcase() {
   const short = product.name.replace(`${site.brand.name} `, '').toUpperCase();
   const change = (direction: number) => setSelected(i => (i + direction + products.length) % products.length);
 
-  return <section className={`sp-stage ${detail ? 'is-detail' : ''}`} style={{ '--accent': product.color, '--accent-light': product.light } as CSSProperties} aria-label="Presentación de modelos conceptuales"
+  return <section className={`sp-stage ${detail ? 'is-detail' : ''}`} style={{ '--accent': product.color, '--accent-light': product.light } as CSSProperties} aria-label="FashionKey: presentación del producto"
     onKeyDown={e => {
       if ((e.target as HTMLElement).closest('a,button')) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); change(1); }
@@ -35,6 +35,7 @@ export function ProductShowcase() {
     <div className="sp-heading">
       <span className="eyebrow">{site.hero.eyebrow}</span>
       <h1>{site.hero.title.map((line, i) => <motion.span key={line} initial={{ opacity: 0, y: reduced ? 0 : 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : 0.1 + i * 0.12, ease: [0.2, 0.8, 0.2, 1] }}>{line}</motion.span>)}</h1>
+      <motion.p className="sp-slogan" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : 0.42 }}>“{site.brand.slogan}”</motion.p>
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : 0.5 }}>{site.hero.subtitle}</motion.p>
       <div className="sp-ctas">
         <a className="btn btn-primary" href={site.hero.primaryCta.href}>{site.hero.primaryCta.label}</a>
@@ -67,7 +68,7 @@ export function ProductShowcase() {
       {products.map((p, i) => <button type="button" key={p.slug} aria-pressed={selected === i} className={selected === i ? 'selected' : ''} style={{ '--swatch': p.color } as CSSProperties} onClick={() => setSelected(i)}><i />{p.name}</button>)}
     </div>
     <span className="sp-hint">{site.hero.hint}</span>
-    <a className="scroll-indicator" href={site.hero.secondaryCta.href} aria-label="Bajar a productos"><span />SCROLL</a>
+    <a className="scroll-indicator" href={site.hero.scrollTarget} aria-label="Seguir leyendo"><span />SCROLL</a>
     <span className="sp-concept-note">{site.disclaimers.concept}</span>
   </section>;
 }

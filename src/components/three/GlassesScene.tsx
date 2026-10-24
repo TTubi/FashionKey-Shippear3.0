@@ -19,7 +19,7 @@ function CarouselItem({ index, selected, detail, onSelect, reduced }: { index: n
     const active = offset === 0;
     const t = clock.elapsedTime;
     const k = reduced ? 1 : 1 - Math.exp(-delta * 6);
-    g.position.x = MathUtils.lerp(g.position.x, active && detail ? 0 : offset * 3.3, k);
+    g.position.x = MathUtils.lerp(g.position.x, active && detail ? 0 : offset * 3.0, k);
     g.position.z = MathUtils.lerp(g.position.z, active ? (detail ? 1 : 0.4) : -2.8, k);
     g.position.y = reduced ? 0 : Math.sin(t * 1.1 + index) * 0.06;
     g.rotation.y = MathUtils.lerp(g.rotation.y, active ? (detail ? (reduced ? -0.6 : -pointer.x * 1.5 - 0.3) : (reduced ? 0 : Math.sin(t * 0.4) * 0.25)) : -offset * 0.75, k);

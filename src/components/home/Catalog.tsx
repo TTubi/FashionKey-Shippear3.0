@@ -7,8 +7,9 @@ import { ProductMedia } from '@/components/ProductArt';
 import { AddToCartButton } from '@/components/shop/AddToCartButton';
 import { PlusIcon } from '@/components/ui/Icons';
 
+// Catálogo de modelos FashionKey con acceso al detalle y a la tienda de demostración.
 export function Catalog() {
-  return <section id="productos" className="home-section">
+  return <section id="productos" className="home-section" aria-label="Productos">
     <div className="container">
       <div className="section-head">
         <div><span className="eyebrow">{site.catalog.eyebrow}</span><h2>{site.catalog.title}</h2></div>
@@ -32,19 +33,6 @@ export function Catalog() {
           </div>
         </article>)}
       </div>
-    </div>
-  </section>;
-}
-
-export function TrustTeaser() {
-  return <section id="tecnologia" className="home-section">
-    <div className="container">
-      <div className="section-head">
-        <div><span className="eyebrow">{site.trust.eyebrow}</span><h2>{site.trust.title}</h2></div>
-        <p>{site.trust.text}</p>
-      </div>
-      <ol className="trust-steps">{site.trust.steps.map((s, i) => <li key={s.title}><span>0{i + 1}</span><h3>{s.title}</h3><p>{s.text}</p></li>)}</ol>
-      <div className="trust-cta"><a className="btn btn-primary" href="#productos">{site.trust.cta}</a><small>{site.disclaimers.simulation}</small></div>
     </div>
   </section>;
 }
