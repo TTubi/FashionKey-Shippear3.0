@@ -125,11 +125,8 @@ export const site = {
       { label: 'País', value: 'Argentina' }
     ],
     account: { name: 'Usuario Demo', email: 'usuario@demo.fashionkey', deviceId: 'FK-DEMO-0001' },
-    payments: [
-      { id: 'card', name: 'Tarjeta demo', detail: '•••• 0000 · no es una tarjeta real' },
-      { id: 'wallet', name: 'Billetera demo', detail: 'Saldo ficticio' },
-      { id: 'transfer', name: 'Transferencia demo', detail: 'Sin datos bancarios' }
-    ]
+    // Único medio de pago de la demo: no se piden números de tarjeta ni datos bancarios.
+    payment: { name: 'Tarjeta demo', detail: '•••• 0000 · no es una tarjeta real' }
   },
   footer: 'Los productos, precios y procesos de compra de este sitio son demostrativos.'
 };

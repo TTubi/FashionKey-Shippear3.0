@@ -18,10 +18,9 @@ const mirror = (p: Point) => ({ left: `${(1 - p.x) * 100}%`, top: `${p.y * 100}%
 //  1. busca un único rostro y decide si lleva lentes;
 //  2. si los lentes son válidos, sigue abierta y espera el gesto de llevar el dedo al sensor de la patilla, detrás de la oreja.
 // Si la cámara no está disponible, ofrece una simulación claramente identificada.
-export function GlassesCamera({ device, biometric, expectTouch, onResult, onTouch, onRetry }: {
+export function GlassesCamera({ device, biometric, onResult, onTouch, onRetry }: {
   device: AuthState['device'];
   biometric: AuthState['biometric'];
-  expectTouch: boolean;
   onResult: (glasses: boolean, source: 'camera' | 'simulated') => void;
   onTouch: () => void;
   onRetry: () => void;
@@ -60,8 +59,8 @@ export function GlassesCamera({ device, biometric, expectTouch, onResult, onTouc
       setLive(true);
       setAspect(el.videoWidth / el.videoHeight || 4 / 3);
       setStatus('Cargando el detector de lentes…');
-      const handsLoading = expectTouch ? vision.loadHandTracker() : null;
-      handsLoading?.catch(() => {}); // se precarga mientras se analizan los lentes
+      const handsLoading = vision.loadHandTracker();
+      handsLoading.catch(() => {}); // se precarga mientras se analizan los lentes
       const detector = await vision.loadGlassesDetector();
       setPhase('scanning');
 
@@ -85,12 +84,11 @@ export function GlassesCamera({ device, biometric, expectTouch, onResult, onTouc
       }
       if (!accepted) return;
       onResult(true, 'camera');
-      if (!expectTouch) { stop(); return; }
 
       // Factor 2 · gesto de huella: yema del dedo junto a la oreja, sostenida un instante.
       setPhase('touch');
       setStatus('Cargando el detector de manos…');
-      const hands = await handsLoading!;
+      const hands = await handsLoading;
       setStatus('');
       let lastFace: FaceInfo | null = null, lastFaceAt = 0, heldSince: number | null = null;
       while (stream.current) {
@@ -122,7 +120,7 @@ export function GlassesCamera({ device, biometric, expectTouch, onResult, onTouc
 
   const retry = () => { stop(); setScore(null); setBox(null); setFace('none'); setEars([]); setTips([]); setTouch(0); setPhase('idle'); onRetry(); };
   const touching = phase === 'touch' && device === 'registered' && biometric !== 'confirmed' && live;
-  const final = device === 'none' || device === 'unknown' || (device === 'registered' && !touching);
+  const final = device === 'none' || (device === 'registered' && !touching);
   const scanning = phase === 'scanning' && device === 'pending';
   const pct = Math.round((score ?? 0) * 100);
   const outcome = device === 'none' ? 'bad' : final ? 'ok' : '';
